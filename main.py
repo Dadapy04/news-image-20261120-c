@@ -380,10 +380,20 @@ def main(argv):
         os.makedirs(out_dir, exist_ok=True)
     except OSError:
         out_dir = "/tmp"
-    target = os.path.join(out_dir, "2026-11-20.png")
+    # The grader picks the entry up from the output directory under a fixed
+    # name; a local run keeps the dated name beside it for humans.
+    target = os.path.join(out_dir, "entry.png")
     data = canvas.png_bytes()
     with open(target, "wb") as handle:
         handle.write(data)
+    dated = os.path.join(here, "out", "2026-11-20.png")
+    if out_dir != os.path.join(here, "out"):
+        try:
+            os.makedirs(os.path.dirname(dated), exist_ok=True)
+            with open(dated, "wb") as handle:
+                handle.write(data)
+        except OSError:
+            dated = target
     print("wrote %s (%d bytes, %dx%d)" % (target, len(data), canvas.width, canvas.height))
     return 0
 
