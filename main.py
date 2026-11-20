@@ -375,8 +375,11 @@ def main(argv):
         print("rendered height %d" % canvas.height)
         return 0
 
-    out_dir = os.path.join(here, "out")
-    os.makedirs(out_dir, exist_ok=True)
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or os.path.join(here, "out")
+    try:
+        os.makedirs(out_dir, exist_ok=True)
+    except OSError:
+        out_dir = "/tmp"
     target = os.path.join(out_dir, "2026-11-20.png")
     data = canvas.png_bytes()
     with open(target, "wb") as handle:
